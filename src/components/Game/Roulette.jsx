@@ -9,7 +9,7 @@ export default function Roulette({ selectedCategory, onFinish }) {
 
   useEffect(() => {
     if (!selectedCategory) {
-      console.warn("⚠️ selectedCategory no está definido. No se inicia la ruleta.");
+      console.log("⚠️ selectedCategory no está definido. No se inicia la ruleta.");
       return;
     }
 
