@@ -1,27 +1,34 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const categories = ["Ciencia", "Arte", "Historia", "Geografía", "Deportes", "Tecnología"];
 
 export default function Roulette({ selectedCategory, onFinish }) {
   const [displayedCategory, setDisplayedCategory] = useState("🎡");
   const [finalCategory, setFinalCategory] = useState(null);
+  const intervalRef = useRef(null);
 
   useEffect(() => {
-    console.log("⏳ Esperando categoría...", selectedCategory);
-    if (!selectedCategory) {
-      return;
-    }
-    console.log("🎯 Iniciando animación con categoría:", selectedCategory);
+    if (!selectedCategory) return;
 
+    console.log("🎯 Iniciando animación con categoría:", selectedCategory);
+    
     let currentIndex = 0;
     const totalSpins = 40;       // 2s total (40 * 50ms)
     const spinInterval = 50;
 
-    const interval = setInterval(() => {
+    // Limpia el intervalo anterior si existía
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+    }
+
+    intervalRef.current = setInterval(() => {
       setDisplayedCategory(categories[currentIndex % categories.length]);
       currentIndex++;
+
       if (currentIndex >= totalSpins) {
-        clearInterval(interval);
+        clearInterval(intervalRef.current);
+        intervalRef.current = null;
+
         setDisplayedCategory(selectedCategory);
         setFinalCategory(selectedCategory);
 
@@ -31,7 +38,11 @@ export default function Roulette({ selectedCategory, onFinish }) {
       }
     }, spinInterval);
 
-    return () => clearInterval(interval);
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+      }
+    };
   }, [selectedCategory, onFinish]);
 
   return (
