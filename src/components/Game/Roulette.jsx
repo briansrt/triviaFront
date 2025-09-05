@@ -8,7 +8,10 @@ export default function Roulette({ selectedCategory, onFinish }) {
   const intervalRef = useRef(null);
 
   useEffect(() => {
-    if (!selectedCategory) return;
+    if (!selectedCategory) {
+      console.warn("⚠️ selectedCategory no está definido. No se inicia la ruleta.");
+      return;
+    }
 
     console.log("🎯 Iniciando animación con categoría:", selectedCategory);
     
