@@ -8,7 +8,10 @@ export const SocketProvider = ({ children }) => {
   const [socket, setSocket] = useState(null);
 
   useEffect(() => {
-    const s = io(import.meta.env.VITE_BACKEND_URL);
+    const s = io(import.meta.env.VITE_BACKEND_URL,{
+      transports: ["websocket"],
+      withCredentials: true,
+    });
     setSocket(s);
     return () => s.disconnect();
   }, []);
