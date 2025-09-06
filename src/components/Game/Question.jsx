@@ -5,9 +5,17 @@ export default function Question({ question, onAnswer }) {
 
   useEffect(() => {
     if (timeLeft <= 0) return;
-    const timer = setTimeout(() => setTimeLeft((t) => t - 1), 1000);
+
+    const timer = setTimeout(() => {
+      setTimeLeft((t) => {
+        if (t <= 1) return 0;
+        return t - 1;
+      });
+    }, 1000);
+
     return () => clearTimeout(timer);
   }, [timeLeft]);
+
 
   const percentage = (timeLeft / question.timeLimit) * 100;
 
