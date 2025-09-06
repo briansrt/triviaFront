@@ -2,27 +2,36 @@ import { useEffect, useState } from "react";
 
 export default function Question({ question, onAnswer }) {
   const [timeLeft, setTimeLeft] = useState(question.timeLimit || 5);
+  const [answered, setAnswered] = useState(false);
+  const [isCorrect, setIsCorrect] = useState(null); // true / false
 
+  // Temporizador
   useEffect(() => {
-    if (timeLeft <= 0) return;
-
-    const timer = setTimeout(() => {
-      setTimeLeft((t) => {
-        if (t <= 1) return 0;
-        return t - 1;
-      });
-    }, 1000);
-
+    if (timeLeft <= 0 || answered) return;
+    const timer = setTimeout(() => setTimeLeft((t) => t - 1), 1000);
     return () => clearTimeout(timer);
-  }, [timeLeft]);
+  }, [timeLeft, answered]);
 
-
+  // Calcular porcentaje de tiempo
   const percentage = (timeLeft / question.timeLimit) * 100;
 
   const getBarColor = () => {
     if (percentage > 50) return "bg-green-500";
     if (percentage > 25) return "bg-yellow-400";
     return "bg-red-500";
+  };
+
+  // 👉 Cuando el usuario responde
+  const handleAnswer = (selected) => {
+    if (answered) return;
+
+    const correct = selected === question.correctAnswer;
+    setIsCorrect(correct);
+    setAnswered(true);
+
+    setTimeout(() => {
+      onAnswer(selected); // Se envía al backend como siempre
+    }, 2000);
   };
 
   return (
@@ -37,8 +46,13 @@ export default function Question({ question, onAnswer }) {
         {question.options.map((opt, i) => (
           <button
             key={i}
-            onClick={() => onAnswer(opt)}
-            className="bg-blue-100 hover:bg-blue-200 text-blue-900 font-semibold px-4 py-3 rounded-lg shadow transition-all duration-300 text-center"
+            onClick={() => handleAnswer(opt)}
+            disabled={answered} // 👈 deshabilita tras responder
+            className={`${
+              answered && opt === question.correctAnswer
+                ? "bg-green-200 text-green-800 font-bold"
+                : "bg-blue-100 hover:bg-blue-200 text-blue-900"
+            } font-semibold px-4 py-3 rounded-lg shadow transition-all duration-300 text-center`}
           >
             {opt}
           </button>
@@ -55,6 +69,17 @@ export default function Question({ question, onAnswer }) {
           style={{ width: `${percentage}%` }}
         ></div>
       </div>
+
+      {/* Feedback visual */}
+      {answered && (
+        <div className="mt-4 text-lg font-semibold text-center">
+          {isCorrect ? (
+            <span className="text-green-600">✅ ¡Respuesta correcta!</span>
+          ) : (
+            <span className="text-red-600">❌ Respuesta incorrecta</span>
+          )}
+        </div>
+      )}
     </div>
   );
 }

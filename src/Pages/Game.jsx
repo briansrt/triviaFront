@@ -11,7 +11,6 @@ export default function Game() {
   const navigate = useNavigate();
   const [players, setPlayers] = useState([]);
   const { user } = useUser();
-  const [feedback, setFeedback] = useState(null); 
   const [category, setCategory] = useState(null);
   const userId = user.id;
 
@@ -83,13 +82,7 @@ export default function Game() {
   };
 
   const handleAnswer = (answer) => {
-    const isCorrect = answer === question.correctAnswer;
-    setFeedback({ correct: isCorrect });
-    setPhase("feedback");
-    setTimeout(() => {
-      socket.emit("answerQuestion", { roomCode: roomCode, answer, userId, name: user.firstName || user.username });
-      setFeedback(null);
-    }, 2000);
+    socket.emit("answerQuestion", { roomCode: roomCode, answer, userId, name: user.firstName || user.username });
   };
 
   return (
@@ -132,20 +125,6 @@ export default function Game() {
     {phase === "question" && question && (
       <div className="w-full max-w-xl">
         <Question question={question} onAnswer={handleAnswer} />
-      </div>
-    )}
-
-    {phase === "feedback" && feedback && (
-      <div className="text-center mt-10 p-6 bg-white rounded-lg shadow-md max-w-md w-full">
-        {feedback.correct ? (
-          <p className="text-green-600 text-xl font-semibold">
-            ✅ ¡Respuesta correcta!
-          </p>
-        ) : (
-          <p className="text-red-600 text-xl font-semibold">
-            ❌ Respuesta incorrecta
-          </p>
-        )}
       </div>
     )}
 
