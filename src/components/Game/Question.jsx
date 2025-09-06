@@ -31,7 +31,7 @@ export default function Question({ question, onAnswer }) {
 
     setTimeout(() => {
       onAnswer(selected); // Se envía al backend como siempre
-    }, 500);
+    }, 200);
   };
 
   return (
