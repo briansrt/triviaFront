@@ -137,7 +137,7 @@ export default function Lobby() {
             </div>
 
 
-            {currentRoom.players.length === 2 && (
+            {currentRoom.players.length === 6 && (
               <button
                 onClick={handleStartGame}
                 className="bg-red-500 text-white px-4 py-2 rounded-lg mt-4"
