@@ -36,5 +36,5 @@ jobs:
         # cambia ./dist por ./build si usas React
 
       - name: Invalidate CloudFront cache
-        run: aws cloudfront create-invalidation --distribution-id D1234567890 --paths "/*"
+        run: aws cloudfront create-invalidation --distribution-id E331OCX9GUV5YT --paths "/*"
         # cambia el ID por el de tu distribución
